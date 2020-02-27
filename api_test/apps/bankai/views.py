@@ -13,6 +13,10 @@ from datetime import datetime
 
 #    curl -X "DELETE" http://127.0.0.1:8000/api2/control/66/
 #    curl -X PUT -H "Content-Type: application/json" -d '{"data":{"id":65, "type":"Control", "attributes": { "name": "ichigo", "type": "Primitive",  "maximum_rabi_rate": "64",  "polar_angle": "0.27"   }	} }' http://127.0.0.1:8000/api2/control/66/
+from drf_yasg.utils import swagger_auto_schema, no_body
+from django.utils.decorators import method_decorator
+
+
 
 class ControlViewSet(viewsets.ModelViewSet):
     """
@@ -31,13 +35,14 @@ class ControlViewSet(viewsets.ModelViewSet):
         #serializer.save(owner=self.request.user) 
 
 
+    @method_decorator(name='download', decorator=swagger_auto_schema(request_body=None, in_body=None, responses={404: 'slug not found'}))
     @action(detail=False, methods=['get'], renderer_classes=[ControlCSVRenderer] + api_settings.DEFAULT_RENDERER_CLASSES)
     def download(self, request):
         """
         Export all controls in CSV format.
 
-        The CSV header is in order of: name, type, maximum_rabi_rate,
-        polar_angle
+        The CSV header is in order of: name, type, maximum_rabi_rate, polar_angle
+        /api2/control/download/?format=csv to stream download
         """
         csv_req = self.request.query_params.get('format', '')
         content = [{
@@ -51,12 +56,13 @@ class ControlViewSet(viewsets.ModelViewSet):
             return Response(content, headers=filename)
         return Response(content)
 
-    
+    #@swagger_auto_schema(method='put', auto_schema=None)
+    @method_decorator(name='bulk_upload', decorator=swagger_auto_schema(request_body=no_body, manual_parameters=[] ,esponses={404: 'slug not found'}))
     @action(methods=['POST'], detail=False)
     def bulk_upload(self, request, *args, **kwargs):
         """
         Bulk upload controls in CSV format.
-
+        The CSV header is in order of: name, type, maximum_rabi_rate, polar_angle
         curl -X POST -H 'Content-Type: text/csv' -H 'Accept: text/csv' --data-binary @control_uploads.csv http://127.0.0.1:8000/api2/control/bulk_upload/
         """
         serializer = self.get_serializer(data=request.data, many=True)
