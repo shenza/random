@@ -1,0 +1,5 @@
+"name","type","maximum_rabi_rate","polar_angle"
+"Single-Qubit Driven","Primitive",63.16731,0.05671
+"Single-Qubit Dynamic Decoupling","CORPSE",87.00172,0.02688
+"Two-Qubit Parametric Drive","Gaussian",70.03844,0.09843
+"Mølmer-Sørensen Drive","CinBB",97.07732,0.09173
