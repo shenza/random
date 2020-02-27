@@ -1,0 +1,13 @@
+python -m venv random.com
+random.com\Scripts\activate
+pip3 install -r .\api_test\requirement.txt
+
+python manage.py createsuperuser --email user@example.com --username admin
+
+start the application -> homepage, localhost:8000/, will show you the documentation for the api
+
+my folder structures are different, i prefer to have a apps folder with customs apps in it
+app in folder apps\bankai
+
+i prefer to have a singular settings file in \settings\common.py with the generic app settings,
+and then run my application of my own settings file
